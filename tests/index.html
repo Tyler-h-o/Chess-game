@@ -1,0 +1,22 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Engine tests</title>
+<pre id="out">running...</pre>
+<script src="../src/engine.js"></script>
+<script src="engine-tests.js"></script>
+<script>
+  // ?t=perft  or  ?t=match&a=500&b=1000&n=20&time=100
+  var q = new URLSearchParams(location.search), res;
+  try {
+    var t0 = Date.now();
+    if (q.get('t') === 'match') {
+      res = EngineTests.runMatch(+q.get('a') || 500, +q.get('b') || 1000, +q.get('n') || 20, { time: +q.get('time') || 100 });
+    } else {
+      res = EngineTests.runPerft();
+    }
+    res.text += '\n' + (res.ok ? 'PASS' : 'FAIL') + ' in ' + ((Date.now() - t0) / 1000).toFixed(1) + 's';
+  } catch (e) {
+    res = { text: 'ERROR ' + (e && e.stack || e) };
+  }
+  document.getElementById('out').textContent = res.text;
+</script>
